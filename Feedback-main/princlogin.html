@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+        <title>Principal-Login page</title>
+        <style>
+            *{
+                margin: 0;
+                padding: 0;
+                font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+            }
+            body{
+                background: url(https://images.squarespace-cdn.com/content/v1/5f48b05ec4357e3051892777/1598601280614-33VEPT25G7GLREJ6YLQD/Med_Grey.jpg);
+                background-size: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                background-attachment: fixed;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100vw;
+                height: 100vh;
+            }
+            #load{
+                background: rgb(255, 255, 255) url(hod-load.gif) no-repeat center;
+                /* background-size: 100px; */
+                width: 100%;
+                height: 100vh;
+                position: fixed;
+                z-index: 100;
+            }
+            .hidden{
+                display: none;
+            }
+            .container{
+                /* border: 1px black solid; */
+                padding: 12px 15px;
+                width: 350px;
+                height: 500px;
+                /* background-color: rgb(105, 105, 105); */
+                backdrop-filter: blur(30px);
+                box-shadow: 0 0 5px rgb(255, 255, 255);
+            }
+            h1{
+                text-align: center;
+                padding: 30px 0 20px 0;
+                font-size: 50px;
+                text-shadow: 0 0 2px white;
+                cursor: default;
+            }
+            .inputs{
+                width: 100%;
+            }
+            .input-box{
+                padding: 30px 10px 20px 10px;
+                position: relative;
+            }
+            .input{
+                font-size: 18px;
+                position: relative;
+                padding: 20px 0 20px 20px;
+                width: 93%;
+                color: rgb(201, 199, 198);
+                border-radius: 30px;
+                background: rgba(167, 167, 167, 0.418);
+                box-shadow: 0 0 5px rgb(0, 0, 0);
+                /* border: 1px black solid; */
+                border: none;
+                /* outline: none; */
+                caret-color: rgb(255, 115, 0);
+            }
+            ::placeholder{
+                color: rgb(39, 39, 39);
+                /* padding-left: 20px; */
+            }
+            ion-icon{
+                position: absolute;
+                width: 16px;
+                height: 20px;
+                top: 52%;
+                right: 33px;
+                /* transform: translateY(-50%); */
+            }
+            span{
+                position: relative;
+                left: 25px;
+                font-size: 12px;
+                bottom: 5px;
+                color: rgba(255, 0, 0, 0.884);
+                font-weight: 200;
+            }
+            .forgot{
+                position: absolute;
+                text-align: right;
+                right: 45px;
+            }
+            .forgot a{
+                text-decoration: none;
+                color: black;
+                font-size: 12px;
+            }
+            .sub{
+                display: grid;
+                place-items: center;
+                margin: 50px 0 30px 0;
+            }
+            .submit{
+                font-size: 18px;
+                padding: 9px 30px;
+                border-radius: 30px;
+                border: none;
+                background-color: black;
+                box-shadow: 0 0 2px white;
+                color: white;
+                cursor: pointer;
+            }
+            .submit:hover{
+                color: black;
+                background-color: rgb(202, 202, 202);
+                transition: .3s;
+            }
+            .forgot p:hover{
+                text-shadow: 0 0 1px;
+                /* color: rgb(139, 139, 139); */
+                font-size: 13px;
+                transition: .3s smooth;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="load"></div>
+        <div class="container">
+            <div class="cont-col">
+                <form id="form">
+                    <h1>Login</h1>
+                    <div class="inputs">
+                        <div class="input-box">
+                            <span class="wrong hidden">Wrong Username!</span><br>
+                            <input type="username" class="input" id="username" placeholder="Username" required>
+                            <ion-icon name="person-outline"></ion-icon><br>
+                        </div>
+                        <div class="input-box">
+                            <span class="wrong hidden">Wrong password!</span><br>
+                            <input type="password" class="input" id="password" placeholder="Password" required>
+                        </div>
+                        <div class="forgot">
+                            <a href="#" id="forg"><p>Forgot password?</p></a>
+                        </div>
+                        <div class="sub">
+                            <button class="submit">Login</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@latest/dist/ionicons/ionicons.js"></script>
+    <script>
+        const form = document.getElementById("form");
+        const username = document.getElementById("username");
+        const password = document.getElementById("password");
+        const userwrong = document.querySelectorAll(".wrong")[0];
+        const passwrong = document.querySelectorAll(".wrong")[1];
+
+        window.addEventListener("load", ()=>{
+            setTimeout(() =>{
+                load.classList.add("hidden");
+            }, 2000);
+        });
+
+        form.addEventListener("submit", (e) =>{
+            e.preventDefault();
+            const user = username.value.toLowerCase();
+            const pass = CryptoJS.SHA256(password.value).toString(CryptoJS.enc.Hex);
+            console.log(user,pass);
+            if(user == realUser && pass == realPass){
+                document.write(user,pass);
+            }else if(user == realUser){
+                passwrong.classList.remove("hidden");
+                password.value ="";
+            }else if(pass == realPass){
+                userwrong.classList.remove("hidden");
+                username.value = "";
+                password.value = "";
+            }else{
+                userwrong.classList.remove("hidden");
+                passwrong.classList.remove("hidden");
+                username.value = "";
+                password.value = "";
+            }
+        });
+
+        username.addEventListener("input", function(){
+            userwrong.classList.add("hidden");
+        });
+        password.addEventListener("input", function(){
+            passwrong.classList.add("hidden");
+        });
+
+        const realUser = "principal";
+        const realPass = "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4";
+    </script>
+</html>

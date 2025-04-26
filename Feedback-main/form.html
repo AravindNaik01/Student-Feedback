@@ -1,0 +1,918 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <title>Student Feedback Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 10px;
+            padding: 10px;
+            background-color: #ffffff;
+            background-image: url(https://github.com/Appuraj46/resub/blob/main/formback.png?raw=true);
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: cover;
+            background-attachment: fixed;
+        }
+
+        #load{
+            background: rgb(255, 255, 255) url(hod-load.gif) no-repeat center;
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            z-index: 100;
+            padding: -10px;
+            margin: -20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            box-shadow: 0 0 15px rgba(145, 144, 144, 0.8);
+            border-radius: 8px;
+            background: transparent;
+            backdrop-filter: blur(20px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #000000;
+            font-weight: 700;
+            font-size: 2.7em;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            font-size: 1.3em;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #1b1a1a;
+            border-radius: 4px;
+        }
+
+        input[type='radio'] {
+            accent-color: #000000;
+        }
+
+        .form-group input[type="submit"] {
+            width: auto;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3em;
+        }
+
+        .form-group input[type="submit"]:hover {
+            background-color: #4cae4c;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .radio-group label {
+            margin-right: 20px;
+        }
+
+        .center-text {
+            text-align: center;
+            color: #333;
+        }
+
+        .question {
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            margin-bottom: 8px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            margin-left: 35px;
+            margin-right: 100px;
+        }
+
+        .option {
+            display: flex;
+            justify-content: flex-start; 
+            align-items: center;
+            margin-bottom: 5px;
+        }
+
+        .option-label {
+            flex-grow: auto;
+            margin-right: auto;
+            font-weight: 500;
+            font-size: 1em;
+        }
+
+        .option-radio {
+            float: left;
+            margin-right: 20px;
+
+        }
+
+        @media (max-width: 768px) {
+            /* body{
+                background-image: url();
+            } */
+            .container {
+                width: 95%;
+                margin: 20px auto;
+                padding: 10px;
+            }
+
+            .radio-group {
+                flex-direction: column;
+                display: flex;
+                align-items: flex-end;
+            }
+
+            .radio-group label {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+
+            .form-group select,
+            .form-group textarea {
+                width: calc(100% - 20px); 
+            }
+        }
+
+        input[type='radio'] {
+            width: 20px;
+            margin-top: auto;
+            height: 17px;
+            float: left;
+        }
+
+        #register {
+            padding: 10px 15px;
+            width: auto;
+            background-color: #ff0000;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 3em;
+        }
+
+        #cook {
+            font-family: Georgia, 'Times New Roman', Times, serif;
+            text-align:center;
+            opacity: 50%;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div id="load"></div>
+    <div class="container" id="form-container">
+        <h1>Student Feedback Form</h1>
+        
+        <form id="feedback-form" onsubmit="handleSubmit(event)">
+            <!--for dep-->
+            <div class="form-group">
+                <label for="dep">Department:</label>
+                <select id="dep" name="dep" required onchange="showYear()">
+                    <option value="">Select Department</option>
+                    <option value="cse">CSE</option>
+                    <option value="ece">ECE</option>
+                    <option value="ise">ISE</option>
+                    <option value="ae">AE</option>
+                </select>
+            </div>
+
+            <!--for year-->
+            <div class="form-group hidden" id="year-group">
+                <label for="year">Year:</label>
+                <select id="year" name="year" required onchange="showSection()">
+                    <option value="">Select Year</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                </select>
+            </div>
+            
+            <!--for sec-->
+            <div class="form-group hidden" id="section-group">
+                <label for="section">Section:</label>
+                <select id="section" name="section" required onchange="showLecture()">
+                    <option value="">Select Section</option>
+                    <option value="A">A</option>
+                    <option value="B">B</option>
+                    <option value="C">C</option>
+                </select>
+            </div>
+            
+            <!--for lec-->
+            <div class="form-group hidden" id="lecture-group">
+                <label for="lecture">Lecturer Name:</label>
+                <select id="lecture" name="lecture" onchange="showSubject()">
+                    <option value="">Select Lecturer Name</option>
+                </select>
+            </div>
+
+            <!--for sub-->
+            <div class="form-group hidden" id="subject-group">
+                <label for="subject">Subject:</label>
+                <select id="subject" name="subject" required onchange="showFeedbackForm()">
+                    <option value="">Select Subject</option>
+                </select>
+            </div>
+            
+            <!--for form-->
+            <div class="form-group hidden" id="feedback-form-group">
+                <h2 id="lecturer-info"></h2>
+                <div id="lecturer-feedback-form">
+                    <div class="question">
+                        <div class="question-text">
+                            <label for="q1">Q1). First look of the teacher:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q1A" name="q1" value="Dignified" required class="option-radio">
+                                <span class="option-label">Dignified</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q1B" name="q1" value="Smiling" required class="option-radio">
+                                <span class="option-label">Smiling</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q1C" name="q1" value="Fearsome" required class="option-radio">
+                                <span class="option-label">Fearsome</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q2">Q2). Teacher comes to the class:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q2A" name="q2" value="On time" required class="option-radio">
+                                <span class="option-label">On time</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q2B" name="q2" value="Late" required class="option-radio">
+                                <span class="option-label">Late</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q2C" name="q2" value="Very late" required class="option-radio">
+                                <span class="option-label">Very late</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q3">Q3). Teacher is:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q3A" name="q3" value="Very regular" required class="option-radio">
+                                <span class="option-label">Very regular</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q3B" name="q3" value="Irregular" required class="option-radio">
+                                <span class="option-label">Irregular</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q4">Q4). Teacheer's preparation of the subject:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q4A" name="q4" value="Very good" required class="option-radio">
+                                <span class="option-label">Very good</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q4B" name="q4" value="Good" required class="option-radio">
+                                <span class="option-label">Good</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q4C" name="q4" value="Poor" required class="option-radio">
+                                <span class="option-label">Poor</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q4D" name="q4" value="No preparation at all" required class="option-radio">
+                                <span class="option-label">No preparation at all</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q5">Q5). Teacher plans the lessons:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q5A" name="q5" value="Always" required class="option-radio">
+                                <span class="option-label">Always</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q5B" name="q5" value="Sometimes" required class="option-radio">
+                                <span class="option-label">Sometimes</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q5C" name="q5" value="Not at all" required class="option-radio">
+                                <span class="option-label">Not at all</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q6">Q6). Teacher's knowledge of the subject:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q6A" name="q6" value="Excellent" required class="option-radio">
+                                <span class="option-label">Excellent</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q6B" name="q6" value="Good" required class="option-radio">
+                                <span class="option-label">Good</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q6C" name="q6" value="Poor" required class="option-radio">
+                                <span class="option-label">Poor</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q7">Q7). Teacher's command in English:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q7A" name="q7" value="Excellent" required class="option-radio">
+                                <span class="option-label">Excellent</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q7B" name="q7" value="Good" required class="option-radio">
+                                <span class="option-label">Good</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q7C" name="q7" value="Poor" required class="option-radio">
+                                <span class="option-label">Poor</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q8">Q8). Teacher's personal discipline:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q8A" name="q8" value="Very good" required class="option-radio">
+                                <span class="option-label">Very good</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q8B" name="q8" value="Good" required class="option-radio">
+                                <span class="option-label">Good</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q8C" name="q8" value="Bad" required class="option-radio">
+                                <span class="option-label">Bad</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q9">Q9). Class room atmosphere is:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q9A" name="q9" value="Relaxed" required class="option-radio">
+                                <span class="option-label">Relaxed</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q9B" name="q9" value="Free" required class="option-radio">
+                                <span class="option-label">Free</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q9C" name="q9" value="Academic" required class="option-radio">
+                                <span class="option-label">Academic</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q10">Q10). Teacher's attitude to help you:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q10A" name="q10" value="Very good" required class="option-radio">
+                                <span class="option-label">Very good</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q10B" name="q10" value="Bad" required class="option-radio">
+                                <span class="option-label">Bad</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q10C" name="q10" value="No help at all" required class="option-radio">
+                                <span class="option-label">No help at all</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q11">Q11). Does the teacher give you the practical examples:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q11A" name="q11" value="Always" required class="option-radio">
+                                <span class="option-label">Always</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q11B" name="q11" value="Sometimes" required class="option-radio">
+                                <span class="option-label">Sometimes</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q11C" name="q11" value="Never" required class="option-radio">
+                                <span class="option-label">Never</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q12">Q12). Valuation by the teacher is:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q12A" name="q12" value="Partial" required class="option-radio">
+                                <span class="option-label">Partial</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q12B" name="q12" value="Impartial" required class="option-radio">
+                                <span class="option-label">Impartial</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q13">Q13). Research attitude of the teacher:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q13A" name="q13" value="Encouraging" required class="option-radio">
+                                <span class="option-label">Encouraging</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q13B" name="q13" value="Bad" required class="option-radio">
+                                <span class="option-label">Bad</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q13C" name="q13" value="Not interested" required class="option-radio">
+                                <span class="option-label">Not interested</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q14">Q14). As a human, the teacher is:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q14A" name="q14" value="Excellent" required class="option-radio">
+                                <span class="option-label">Excellent</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q14B" name="q14" value="Good" required class="option-radio">
+                                <span class="option-label">Good</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q14C" name="q14" value="Poor" required class="option-radio">
+                                <span class="option-label">Poor</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q15">Q15). Does the teacher listen to your problem outside the class:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q15A" name="q15" value="Always" required class="option-radio">
+                                <span class="option-label">Always</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q15B" name="q15" value="Sometimes" required class="option-radio">
+                                <span class="option-label">Sometimes</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q15C" name="q15" value="Not at all" required class="option-radio">
+                                <span class="option-label">Not at all</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q16">Q16). Does the teacher complete the syllabus:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q16A" name="q16" value="Always" required class="option-radio">
+                                <span class="option-label">Always</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q16B" name="q16" value="No" required class="option-radio">
+                                <span class="option-label">No</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q17">Q17). Teacher refers his notes / textbook:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q17A" name="q17" value="Always" required class="option-radio">
+                                <span class="option-label">Always</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q17B" name="q17" value="Sometimes" required class="option-radio">
+                                <span class="option-label">Sometimes</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q17C" name="q17" value="Not at all" required class="option-radio">
+                                <span class="option-label">Not at all</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q18">Q18). Teacher faces always:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q18A" name="q18" value="The Students" required class="option-radio">
+                                <span class="option-label">The Students</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q18B" name="q18" value="Black board" required class="option-radio">
+                                <span class="option-label">Black board</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q18C" name="q18" value="Sky" required class="option-radio">
+                                <span class="option-label">Sky</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q19">Q19). Teachers working on the board is:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q19A" name="q19" value="Legible & clear" required class="option-radio">
+                                <span class="option-label">Legible & clear</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q19B" name="q19" value="Rubbish" required class="option-radio">
+                                <span class="option-label">Rubbish</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q19C" name="q19" value="No Borad work at all" required class="option-radio">
+                                <span class="option-label">No Borad work at all</span>
+                            </div>
+                        </div>
+                        <div class="question-text">
+                            <label for="q20">Q20). The overall rating of the teacher is:</label>
+                        </div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q20A" name="q20" value="Excellent" required class="option-radio">
+                                <span class="option-label">Excellent</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q20B" name="q20" value="Very good" required class="option-radio">
+                                <span class="option-label">Very good</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q20C" name="q20" value="Good" required class="option-radio">
+                                <span class="option-label">Good</span>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q20C" name="q20" value="Poor" required class="option-radio">
+                                <span class="option-label">Poor</span>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <!-- For comments at last -->
+                    <div class="form-group">
+                        <label for="comments">Additional Comments:</label>
+                        <p id="charCount"></p>
+                        <textarea id="comments" name="comments" rows="4" placeholder="Enter your comments here...(Max 150 Characters)" oninput="typeLimit(this,150)" maxlength="150"></textarea>
+                    </div>
+                    <!--next feedback button-->
+                    <div class="form-group">
+                        <input type="submit" value="Next Feedback" id="submit-btn">
+                        
+                    </div>
+                </div>
+            </div>
+            <!--submit button final-->
+            <button id="register" onclick="redirect()">Submit</button>
+
+            <input type="hidden" id="hidden-dep" name="hidden-dep">
+            <input type="hidden" id="hidden-year" name="hidden-year">
+            <input type="hidden" id="hidden-section" name="hidden-section">
+            <footer class="form-group hidden" id="cook">We use cookies</footer>
+        </form>
+    </div>
+
+    <script>
+        window.addEventListener("load", ()=>{
+            const load = document.getElementById("load");
+            setTimeout(() => {
+                load.classList.add("hidden");
+            }, 1500);
+        });
+        
+        //need to modify
+        const lecturers = {
+            "cse": ["lec1", "lec2", "lec3", "lec4", "lec5"],
+            "ece": ["lec6", "lec7", "lec8", "lec9", "lec10"],
+            "ise": ["lec11", "lec12", "lec13", "lec14", "lec15"],
+            "ae": ["lec16", "lec17", "lec18", "lec19", "lec20"]
+        };
+
+        //need to modify
+        const subjects = {
+            /*"Subject 1", "Subject 2", "Subject 3", "Subject 4", "Subject 5",
+            "Subject 6", "Subject 7", "Subject 8", "Subject 9", "Subject 10",
+            "Subject 11", "Subject 12",*/
+            cse: {
+                1: { A: ['Sub1', 'Sub2', 'Sub3'], B: ['Sub4', 'Sub5', 'Sub6'], C: ['Sub7', 'Sub8', 'Sub9'] },
+                2: { A: ['Sub10', 'Sub11', 'Sub12'], B: ['Sub13', 'Sub14', 'Sub15'], C: ['Sub16', 'Sub17', 'Sub18'] },
+                3: { A: ['Sub19', 'Sub20', 'Sub21'], B: ['Sub22', 'Sub23', 'Sub24'], C: ['Sub25', 'Sub26', 'Sub27'] },
+                4: { A: ['Sub28', 'Sub29', 'Sub30'], B: ['Sub31', 'Sub32', 'Sub33'], C: ['Sub34', 'Sub35', 'Sub36'] }
+            },
+            ece: {
+                1: { A: ['Sub37', 'Sub38', 'Sub39'], B: ['Sub40', 'Sub41', 'Sub42'], C: ['Sub43', 'Sub44', 'Sub45'] },
+                2: { A: ['Sub46', 'Sub47', 'Sub48'], B: ['Sub49', 'Sub50', 'Sub51'], C: ['Sub52', 'Sub53', 'Sub54'] },
+                3: { A: ['Sub55', 'Sub56', 'Sub57'], B: ['Sub58', 'Sub59', 'Sub60'], C: ['Sub61', 'Sub62', 'Sub63'] },
+                4: { A: ['Sub64', 'Sub65', 'Sub66'], B: ['Sub67', 'Sub68', 'Sub69'], C: ['Sub70', 'Sub71', 'Sub72'] }
+            },
+            ise: {
+                1: { A: ['Sub73', 'Sub74', 'Sub75'], B: ['Sub76', 'Sub77', 'Sub78'], C: ['Sub79', 'Sub80', 'Sub81'] },
+                2: { A: ['Sub82', 'Sub83', 'Sub84'], B: ['Sub85', 'Sub86', 'Sub87'], C: ['Sub88', 'Sub89', 'Sub90'] },
+                3: { A: ['Sub91', 'Sub92', 'Sub93'], B: ['Sub94', 'Sub95', 'Sub96'], C: ['Sub97', 'Sub98', 'Sub99'] },
+                4: { A: ['Sub100', 'Sub101', 'Sub102'], B: ['Sub103', 'Sub104', 'Sub105'], C: ['Sub106', 'Sub107', 'Sub108'] }
+            },
+            ae: {
+                1: { A: ['Sub109', 'Sub110', 'Sub111'], B: ['Sub112', 'Sub113', 'Sub114'], C: ['Sub115', 'Sub116', 'Sub117'] },
+                2: { A: ['Sub118', 'Sub119', 'Sub120'], B: ['Sub121', 'Sub122', 'Sub123'], C: ['Sub124', 'Sub125', 'Sub126'] },
+                3: { A: ['Sub127', 'Sub128', 'Sub129'], B: ['Sub130', 'Sub131', 'Sub132'], C: ['Sub133', 'Sub134', 'Sub135'] },
+                4: { A: ['Sub136', 'Sub137', 'Sub138'], B: ['Sub139', 'Sub140', 'Sub141'], C: ['Sub142', 'Sub143', 'Sub144'] }
+            }
+        };
+
+        let usedCombinations = []; //for disaabling the same combination of lec and sub
+        let lecturerCounts = {}; //for deleting lec after 2
+        let usedSubjects = []; //for deleting sub after 1
+        let subcount = 0; //for submit button
+        
+        //for year dropdown
+        function showYear() {
+            const dep = document.getElementById("dep").value;
+            document.getElementById("year-group").classList.remove("hidden");
+            resetDropdown('year');
+            resetDropdown('section');
+            resetDropdown('lecture');
+            resetDropdown('subject');
+            hideElement('section-group');
+            hideElement('lecture-group');
+            hideElement('subject-group');
+            hideElement('feedback-form-group');
+        }
+
+        //for sec dropdown
+        function showSection() {
+            document.getElementById("section-group").classList.remove("hidden");
+            resetDropdown('section');
+            resetDropdown('lecture');
+            resetDropdown('subject');
+            hideElement('lecture-group');
+            hideElement('subject-group');
+            hideElement('feedback-form-group');
+        }
+
+        //for lec dropdown
+        function showLecture() {
+            const dep = document.getElementById("dep").value;
+            const year = document.getElementById("year").value;
+            const section = document.getElementById("section").value;
+
+            const lectureGroup = document.getElementById("lecture-group");
+            const lectureSelect = document.getElementById("lecture");
+            lectureGroup.classList.remove("hidden");
+            lectureSelect.innerHTML = '<option value="">Select Lecturer Name</option>';
+
+            lecturers[dep].forEach(lecture => {
+                if (!(lecture in lecturerCounts)) {
+                    lecturerCounts[lecture] = 0;
+                }
+                if (lecturerCounts[lecture] < 2) {
+                    const option = document.createElement("option");
+                    option.value = lecture;
+                    option.textContent = lecture;
+                    lectureSelect.appendChild(option);
+                }
+            });
+            resetDropdown('lecture');
+            resetDropdown('subject');
+            hideElement('subject-group');
+            hideElement('feedback-form-group');
+        }
+
+        //for sub dropdown
+        /*function showSubject() {
+            const subjectGroup = document.getElementById("subject-group");
+            const subjectSelect = document.getElementById("subject");
+            subjectGroup.classList.remove("hidden");
+            subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+
+            subjects[dep][year][section].forEach(subject => {
+                if if (subjects[dep] && subjects[dep][year] && subjects[dep][year][section]) {
+                subjects[dep][year][section].forEach(subject => {
+                    const option = document.createElement("option");
+                    option.value = subject;
+                    option.textContent = subject;
+                    subjectSelect.appendChild(option);
+                }
+            });
+            resetDropdown('subject');
+            hideElement('feedback-form-group');
+        }*/
+        
+        function showSubject() {
+            const dep = document.getElementById("dep").value;
+            const year = document.getElementById("year").value;
+            const section = document.getElementById("section").value;
+
+            const subjectGroup = document.getElementById("subject-group");
+            const subjectSelect = document.getElementById("subject");
+            subjectGroup.classList.remove("hidden");
+            subjectSelect.innerHTML = '<option value="">Select Subject</option>';
+
+            subjects[dep][year][section].forEach(subject => {
+                if (!usedSubjects.includes(subject)) {
+                    const option = document.createElement("option");
+                    option.value = subject;
+                    option.textContent = subject;
+                    subjectSelect.appendChild(option);
+                }
+            });
+            resetDropdown('subject');
+            hideElement('feedback-form-group');
+        }
+
+        //for form q and options
+        function showFeedbackForm() {
+            const dep = document.getElementById("dep").value;
+            const year = document.getElementById("year").value;
+            const section = document.getElementById("section").value;
+            const lecture = document.getElementById("lecture").value;
+            const subject = document.getElementById("subject").value;
+
+            const combination = `${lecture}-${subject}`;
+            document.getElementById("hidden-dep").value = dep;
+            document.getElementById("hidden-year").value = year;
+            document.getElementById("hidden-section").value = section;
+
+            const feedbackFormGroup = document.getElementById("feedback-form-group");
+            feedbackFormGroup.classList.remove("hidden");
+            document.getElementById("cook").classList.remove("hidden");
+
+            const lecturerInfo = document.getElementById("lecturer-info");
+            lecturerInfo.textContent = `${lecture} - ${subject}`;
+
+            document.getElementById("dep").disabled = true;
+            document.getElementById("year").disabled = true;
+            document.getElementById("section").disabled = true;
+            document.getElementById("submit-btn").disabled = false;
+        }
+
+        function typeLimit(typed, limit) {
+            const text = typed.value;
+            typed.addEventListener('keypress', function(e) {
+                if (typed.value.length >= limit) {
+                    e.preventDefault();
+                }
+            });
+            if (text.length > limit) {
+                textarea.value = text.substring(0, limit);
+            }
+            const charCount = document.getElementById("charCount");
+            charCount.textContent = text.length + "/" + limit + " Characters";
+        }
+
+        //for next feedback button
+        function handleSubmit(event) {
+            event.preventDefault();
+            const form = document.getElementById("feedback-form");
+            const formData = new FormData(form);
+            const dep = formData.get("hidden-dep");
+            const year = formData.get("hidden-year");
+            const section = formData.get("hidden-section");
+            const lecture = formData.get("lecture");
+            const subject = formData.get("subject");
+            const comments = formData.get("comments");
+
+            const combination = `${lecture}-${subject}`;
+            usedCombinations.push(combination);
+
+            if (!(lecture in lecturerCounts)) {
+                lecturerCounts[lecture] = 0;
+            }
+            lecturerCounts[lecture] += 1;
+
+            usedSubjects.push(subject);
+
+            const feedbackData = {
+                department: dep,
+                year: year,
+                section: section,
+                lecturer: lecture,
+                subject: subject,
+                comments: comments
+            };
+            for (let [key, value] of formData.entries()) {
+                if (key.startsWith('q')) {
+                    feedbackData[key] = value;
+                }
+            }
+
+            //console.log('Form Submitted', feedbackData);
+            subcount += 1;
+
+            const radioButtons = form.querySelectorAll('input[type="radio"]');
+            radioButtons.forEach(radio => {
+                radio.checked = false;
+            });
+
+            resetDropdown('lecture');
+            resetDropdown('subject');
+            resetcomment('comments');
+            hideElement('lecture-group');
+            hideElement('subject-group');
+            hideElement('feedback-form-group');
+            hideElement('cook');
+            showLecture();
+            //showSubject();
+
+            const secretKey = CryptoJS.enc.Base64.parse("/N6hvQMv4wVYwEBQ8MOVkW/Mo70vAMCKzyW2Wvk87cM=");
+            function sendFeedbackData() {
+                var data = JSON.stringify(feedbackData);
+                var iv = CryptoJS.lib.WordArray.random(16);
+                var encryptedData = CryptoJS.AES.encrypt(data, secretKey, { iv: iv }).toString();
+                var ivBase64 = CryptoJS.enc.Base64.stringify(iv);
+
+                var xhr = new XMLHttpRequest();
+                xhr.open("POST", "database.php", true);
+                xhr.setRequestHeader("Content-Type", "application/json");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4) {
+                        console.log("Status: " + xhr.status);
+                        console.log("Response: " + xhr.responseText);
+                    }
+                };
+
+                var payload = JSON.stringify({ data: encryptedData, iv: ivBase64 });
+                console.log("Sending data: " + payload);
+                xhr.send(payload);
+            }
+
+            sendFeedbackData();
+        }
+
+        //to set cookie
+        function setCookie(name, value, minutes) {
+            const d = new Date();
+            d.setTime(d.getTime() + (/*days * 24 * 60*/ minutes * 60 * 1000));
+            const expires = "expires=" + d.toUTCString();
+            document.cookie = name + "=" + value + ";" + expires + ";path=/";
+        }
+
+        //for submit button condition final
+        function redirect() {
+            if (subcount > 2) {
+                alert('Minimum two forms should be submitted!!!');
+            } else {
+                document.getElementById("register").addEventListener("click", function() {
+                    event.preventDefault();
+                    setCookie("formSubmitted", "true", 2);
+                    window.location.replace("submitted.html");
+                });
+            }
+        }
+
+        //for dropdowns reset of lec and sub
+        function resetDropdown(id) {
+            const dropdown = document.getElementById(id);
+            dropdown.value = "";
+        }
+
+        //for command reset
+        function resetcomment(id) {
+            const comment = document.getElementById(id);
+            comment.value = "";
+        }
+
+        //for hiding element
+        function hideElement(id) {
+            document.getElementById(id).classList.add("hidden");
+        }
+    </script>
+</body>
+</html>

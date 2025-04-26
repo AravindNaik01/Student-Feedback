@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leclogin page</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        }
+        body{
+            background: url(https://www.wallpaperflare.com/static/25/591/810/nature-landscape-fall-dirt-road-wallpaper.jpg) no-repeat center;
+            background-size: cover;
+            background-attachment: fixed;
+            width: 100vw;
+            height: 100vh;
+            display: grid;
+            place-items: center;
+        }
+        .hidden{
+            display: none;
+        }
+        .container{
+            width: 400px;
+            height: 500px;
+            border: 1px rgba(141, 33, 0, 0.521) solid;
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 0 20px rgb(0, 0, 0);
+            box-sizing: border-box;
+        }
+        h1{
+            text-align: center;
+            padding: 30px 0;
+            font-size: 50px;
+            color: #2b0500;
+            text-shadow: 0 0 4px #ffffff;
+        }
+        .inputs{
+            display: grid;
+            place-items: center;
+            margin-top: 12px;
+        }
+        .search{
+            width: 80%;
+            margin: 23% 0;
+            display: grid;
+            place-items: center;
+            transition: 0.5s;
+        }
+        .searched{
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+            /* border: 1px black solid; */
+        }
+        .lecname{
+            width: 90%;
+            padding: 17px 0 17px 25px;
+            background: #ff480049;
+            backdrop-filter: blur(50%);
+            border-radius: 30px;
+            color: white;
+            font-size: 18px;
+            border: 1px rgb(0, 0, 0) solid;
+            box-shadow: 0 0 10px #000000;
+        }
+        .lecname::placeholder{
+            /* padding: 0 0 0 15px; */
+            font-size: 18px;
+            color: rgb(29, 29, 29);
+        }
+        input:focus{
+            outline: 1.5px rgb(255, 0, 0) solid;
+            border: none;
+        }
+        .lec-list {
+            display: none;
+            border: 1px solid #ff2600;
+            background: #96270567;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgb(0, 0, 0);
+            margin-top: -10px;
+            /* padding: 0 0 0 10px; */
+            text-indent: 10px;
+            max-height: 100px;
+            font-size: 18px;
+            color: white;
+            width: 70%;
+            overflow-y: auto;
+        }
+        .lec-list.active{
+            display: block;
+            cursor: pointer;
+        }
+        .lec-list div:hover{
+            background-color: #b8190d;
+        }
+        .lec-list::-webkit-scrollbar{
+            width: 10px;
+            background: transparent;
+            border: 1px rgb(216, 15, 1) solid;
+            border-radius: 10px;
+        }
+        .lec-list::-webkit-scrollbar-thumb{
+            background-color: #b8190d;
+            border-radius: 10px;
+        }
+        .pass-box{
+            width: 67%;
+            margin: 20px 0 15px 0;
+            transition: .2s;
+            padding: 10px 0;
+            /* border: 1px black solid; */
+        }
+        .password{
+            width: 100%;
+            padding: 17px 0 17px 25px;
+            background: #ff480049;
+            backdrop-filter: blur(50%);
+            border-radius: 30px;
+            color: rgb(0, 0, 0);
+            font-size: 18px;
+            border: 1px rgb(0, 0, 0) solid;
+            box-shadow: 0 0 10px #000000;
+            transition: .2s;
+        }
+        .password::placeholder{
+            color: #181818;
+        }
+        .wrong{
+            color: rgb(255, 0, 0);
+            font-size: 13px;
+            position: relative;
+            bottom: 5px;
+            left: 20px;
+        }
+        .forg{
+            margin: 12px 19px 0 0;
+            display: flex;
+            justify-content: right;
+        }
+        .forg a{
+            text-decoration: none;
+            color: #181818;
+            font-size: 13px;
+        }
+        .sub-but{
+            margin: 10px 0;
+            transition: .2s;
+        }
+        .submit{
+            font-size: 22px;
+            font-weight: 600;
+            padding: 5px 22px;
+            border-radius: 30px;
+            border: 1px black solid;
+            box-shadow: 0 0 5px #000000;
+            background: rgb(255, 38, 0);
+            cursor: pointer;
+        }
+
+        @media(max-width: 500px){
+            .container{
+                width: 360px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form method="post">
+            <h1>Login</h1>
+            <div class="inputs">
+                <div class="search">
+                    <input type="text" id="lecname" class="lecname" placeholder="Enter your name....." autocomplete="off"><br>
+                    <div class="lec-list" id="lec-list"></div>
+                </div>
+                <div class="pass-box hidden">
+                    <span class="wrong hidden">Wrong Password!</span><br>
+                    <input type="password" id="password" class="password" placeholder="Password">
+                    <div class="forg ">
+                        <a href="#"><p>forgot password?</p></a>
+                    </div>
+                </div>
+                <div class="sub-but hidden">
+                    <button class="submit" id="submit">Login</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    lecOp = [
+        "lec1", "lec2", "lec13", "lec24", "lec3", "lec4", "lec5", "lec6", "lec7", "lec8", "lec9",
+        "lec8", "lec9", "lec10", "lec11", "lec12", "lec14", "lec15", "lec16", "lec17", "lec18", "lec19", "lec20",
+    ];
+
+    const search = document.getElementsByClassName("search")[0];
+    const lecType = document.getElementById("lecname");
+    const lecList = document.getElementById("lec-list");
+
+    lecType.addEventListener("click", ()=>{
+        search.classList.remove("searched");
+        document.getElementsByClassName("pass-box")[0].classList.add("hidden");
+        document.getElementsByClassName("sub-but")[0].classList.add("hidden");
+        lecType.addEventListener("input", () =>{
+            console.log("1");
+            const name = lecType.value.toLowerCase();
+            lecList.innerHTML = "";
+            lecList.classList.add("active");
+            if(name){
+                lecList.classList.add("active");
+                console.log(name);
+                const list = lecOp.filter(option => option.toLowerCase().includes(name));
+                if(list == 0){
+                    lecList.style.padding = "10px"
+                    lecList.innerHTML = "No result found";
+                }
+                list.forEach(option => {
+                    const eachOption = document.createElement("div");
+                    eachOption.textContent = option;
+                    eachOption.addEventListener("click", () =>{
+                        lecType.value = option;
+                        lecList.classList.remove("active");
+                        search.classList.add("searched");
+                        document.getElementsByClassName("pass-box")[0].classList.remove("hidden");
+                        document.getElementsByClassName("sub-but")[0].classList.remove("hidden");
+                    });
+                    lecList.appendChild(eachOption);
+                }); 
+            }
+            else{
+                lecList.classList.remove("active");
+            }
+        });
+    });
+</script>
+</html>

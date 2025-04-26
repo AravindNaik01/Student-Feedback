@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Feedback Submitted</title>
+<style>
+    .feedback-message {
+        background-color: #f0f0f0;
+        text-align: center;
+        padding: 50px;
+        font-size: 40px;
+        animation: slideIn 1s ease;
+        position: fixed;
+        width: 100%;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+    }
+
+    @keyframes slideIn {
+        from {
+            transform: translateX(-50%) translateY(-100%);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+    }
+
+    .content {
+        padding: 20px;
+    }
+
+    /*@media (max-width: 768px) {
+        .feedback-message {
+            padding: 30px;
+            font-size: 20px;
+        }
+    }*/
+</style>
+</head>
+<body>
+    <div class="feedback-message">
+        <p>Your Feedback has already been submitted!</p>
+    </div>
+</body>
+</html>
